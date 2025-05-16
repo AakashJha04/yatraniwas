@@ -48,8 +48,8 @@ public class HotelController {
     }
 
     @PatchMapping("/{hotelId}")
-    public ResponseEntity<Void> activeHotel(Long hotelId){
-        log.info("[INFO]:\tController to Activate the Hotel with id: {}", hotelId);
+    public ResponseEntity<Void> activateHotel(@PathVariable Long hotelId){
+        log.info("[INFO]:\tController to get Hotel with id: {}", hotelId);
         hotelService.activeHotel(hotelId);
         return ResponseEntity.noContent().build();
     }

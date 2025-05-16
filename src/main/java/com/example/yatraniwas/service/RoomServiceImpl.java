@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,9 +22,11 @@ public class RoomServiceImpl implements RoomService{
 
     private final RoomRepository roomRepository;
     private final HotelRepository hotelRepository;
+    private final InventoryService inventoryService;
     private final ModelMapper modelmapper;
 
     @Override
+    @Transactional
     public RoomDto createNewRoom(Long hotelId, RoomDto roomDto) {
         log.info("[INFO]:\tGetting the Hotel with ID: {}", hotelId);
         Hotel hotel = hotelRepository.
@@ -33,7 +36,11 @@ public class RoomServiceImpl implements RoomService{
         Room room = modelmapper.map(roomDto, Room.class);
         room.setHotel(hotel);
         room = roomRepository.save(room);
-        // TODO : create inventory for it
+
+        // DONE ---------- created inventory for Room ----- DONE
+        if(hotel.getActive()){
+            inventoryService.initializeRoomForYear(room);
+        }
         return modelmapper.map(room, RoomDto.class);
     }
 
@@ -59,13 +66,14 @@ public class RoomServiceImpl implements RoomService{
     }
 
     @Override
+    @Transactional
     public void deleteRoomById(Long roomId) {
         log.info("[INFO]:\tChecking the room with ID: {} is present", roomId);
-        boolean isRoomPresent = roomRepository.existsById(roomId);
-        if(!isRoomPresent){
-            throw  new ResourceNotFoundException("Room not found with ID: "+ roomId);
-        }
+        Room room = roomRepository.
+                findById(roomId).
+                orElseThrow(()->new ResourceNotFoundException("Room not found with id "+roomId));
+        // DONE --------- delete all future inventory ------ DONE
+        inventoryService.deleteFutureInventories(room);
         roomRepository.deleteById(roomId);
-        // TODO delete all future inventory
     }
 }
