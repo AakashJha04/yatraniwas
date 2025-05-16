@@ -1,6 +1,8 @@
 package com.example.yatraniwas.service;
 
 import com.example.yatraniwas.dto.HotelDto;
+import com.example.yatraniwas.dto.HotelInfoDto;
+import com.example.yatraniwas.dto.RoomDto;
 import com.example.yatraniwas.entity.Hotel;
 import com.example.yatraniwas.entity.Room;
 import com.example.yatraniwas.exception.ResourceNotFoundException;
@@ -11,6 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -84,6 +89,19 @@ public class HotelServiceImpl implements HotelService{
         for(Room room: hotel.getRooms()){
             inventoryService.initializeRoomForYear(room);
         }
+    }
+
+    @Override
+    public HotelInfoDto getHotelInfoById(Long id) {
+        Hotel hotel = hotelRepository.
+                findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Hotel not present with id: "+ id));
+        List<RoomDto> rooms = hotel
+                .getRooms()
+                .stream()
+                .map((element)-> modelMapper.map(element, RoomDto.class))
+                .toList();
+        return new HotelInfoDto(modelMapper.map(hotel, HotelDto.class), rooms);
     }
 
 

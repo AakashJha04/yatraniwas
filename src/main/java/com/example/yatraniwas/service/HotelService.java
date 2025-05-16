@@ -1,6 +1,7 @@
 package com.example.yatraniwas.service;
 
 import com.example.yatraniwas.dto.HotelDto;
+import com.example.yatraniwas.dto.HotelInfoDto;
 import com.example.yatraniwas.entity.Hotel;
 
 public interface HotelService {
@@ -9,4 +10,5 @@ public interface HotelService {
     HotelDto updateHotelById(Long id, HotelDto hotelDto);
     void deleteHotelById(Long id);
     void activeHotel(Long id);
+    HotelInfoDto getHotelInfoById(Long id);
 }
