@@ -65,7 +65,8 @@ public class HotelServiceImpl implements HotelService{
         hotelRepository.deleteById(id);
         // deleted the future inventory for this hotel;
         for(Room room: hotel.getRooms()){
-            inventoryService.deleteFutureInventories(room);
+            inventoryService.deleteAllInventories(room);
+            roomRepository.deleteById(room.getId());
         }
     }
 
