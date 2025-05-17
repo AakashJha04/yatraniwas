@@ -37,7 +37,7 @@ public class PricingUpdateService {
     private final HotelMinPriceRepository hotelMinPriceRepository;
     private final PricingService pricingService;
 
-    // every 5 sec scheduling done
+    // every 1 hr scheduling done
     @Scheduled(cron = "0 0 * * * *")
     public void updatePrices(){
         int page = 0;
@@ -57,6 +57,7 @@ public class PricingUpdateService {
         LocalDate endDate = LocalDate.now().plusYears(1);
         List<Inventory> inventoryList = inventoryRepository
                 .findByHotelAndDateBetween(hotel, startDate, endDate);
+        updateInventoryPrices(inventoryList);
         updateHotelMinPrice(hotel, inventoryList, startDate, endDate);
     }
 
