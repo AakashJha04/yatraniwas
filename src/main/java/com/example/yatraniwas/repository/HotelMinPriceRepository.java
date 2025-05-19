@@ -1,4 +1,5 @@
 package com.example.yatraniwas.repository;
+
 import com.example.yatraniwas.dto.HotelPriceDto;
 import com.example.yatraniwas.entity.Hotel;
 import com.example.yatraniwas.entity.HotelMinPrice;
@@ -13,21 +14,19 @@ import java.util.Optional;
 
 public interface HotelMinPriceRepository extends JpaRepository<HotelMinPrice, Long> {
 
-    @Query(
-            """
-                    SELECT com.example.yatraniwas.dto.HotelPriceDto(i.hotel, AVG(i.price))
-                    FROM HotelMinPrice i
-                    WHERE i.hotel.city = :city
-                        AND i.date BETWEEN :startDate AND :endDate
-                        AND i.hotel.active = true
-                    GROUP BY i.hotel
-            """
-    )
-    Page<HotelPriceDto> findHotelswithAvailableInventory(
+    @Query("""
+            SELECT new com.example.yatraniwas.dto.HotelPriceDto(i.hotel, AVG(i.price))
+            FROM HotelMinPrice i
+            WHERE i.hotel.city = :city
+                AND i.date BETWEEN :startDate AND :endDate
+                AND i.hotel.active = true
+           GROUP BY i.hotel
+           """)
+    Page<HotelPriceDto> findHotelsWithAvailableInventory(
             @Param("city") String city,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate,
-            @Param("roomCount") Integer roomCount,
+            @Param("roomsCount") Integer roomsCount,
             @Param("dateCount") Long dateCount,
             Pageable pageable
     );

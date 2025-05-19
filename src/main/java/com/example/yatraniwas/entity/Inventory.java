@@ -14,10 +14,9 @@ import java.time.LocalDateTime;
 @Setter
 @Table(
         uniqueConstraints = @UniqueConstraint(
-                name = "unique_hotel_room_date",
-                columnNames = {"hotel_id", "room_id", "date"}
-        )
-)
+            name = "unique_hotel_room_date",
+            columnNames = {"hotel_id", "room_id", "date"}
+))
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -32,14 +31,14 @@ public class Inventory {
     private Hotel hotel;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id", nullable = false)
+    @JoinColumn(name= "room_id", nullable = false)
     private Room room;
 
     @Column(nullable = false)
     private LocalDate date;
 
     @Column(nullable = false, columnDefinition = "INTEGER DEFAULT 0")
-    private Integer bookCount;
+    private Integer bookedCount;
 
     @Column(nullable = false, columnDefinition = "INTEGER DEFAULT 0")
     private Integer reservedCount;
@@ -47,7 +46,7 @@ public class Inventory {
     @Column(nullable = false)
     private Integer totalCount;
 
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(nullable = false, precision = 5, scale = 2)
     private BigDecimal surgeFactor;
 
     @Column(nullable = false, precision = 10, scale = 2)
@@ -60,9 +59,8 @@ public class Inventory {
     private Boolean closed;
 
     @CreationTimestamp
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-
 }

@@ -10,6 +10,5 @@ public class BookingRequest {
     private Long roomId;
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
-    private Integer roomCount;
+    private Integer roomsCount;
 }
-

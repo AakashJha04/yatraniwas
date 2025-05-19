@@ -1,6 +1,8 @@
 package com.example.yatraniwas.dto;
 import lombok.Data;
+
 import java.math.BigDecimal;
+
 @Data
 public class RoomDto {
     private Long id;

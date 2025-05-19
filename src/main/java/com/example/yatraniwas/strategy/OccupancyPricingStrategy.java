@@ -1,19 +1,22 @@
-package com.example.yatraniwas.startegy;
+package com.example.yatraniwas.strategy;
+
 import com.example.yatraniwas.entity.Inventory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
 import java.math.BigDecimal;
 
 @RequiredArgsConstructor
-public class HolidayPricingStrategy implements PricingStrategy{
+public class OccupancyPricingStrategy implements PricingStrategy{
 
     private final PricingStrategy wrapped;
 
     @Override
     public BigDecimal calculatePrice(Inventory inventory) {
         BigDecimal price = wrapped.calculatePrice(inventory);
-        boolean isTodayHoliday = true; // call an API or check with LocalDate
-        if(isTodayHoliday){
-            price = price.multiply(BigDecimal.valueOf(2.0));
+        double occupancyRate = (double) inventory.getBookedCount() / inventory.getTotalCount();
+        if(occupancyRate > 0.8) {
+            price = price.multiply(BigDecimal.valueOf(1.2));
         }
         return price;
     }

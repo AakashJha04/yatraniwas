@@ -1,5 +1,6 @@
 package com.example.yatraniwas.entity;
 
+import com.example.yatraniwas.entity.enums.Gender;
 import com.example.yatraniwas.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -8,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -15,21 +17,27 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
-@Setter
 @Getter
+@Setter
 @Table(name = "app_user")
 public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
     @Column(nullable = false)
     private String password;
 
     private String name;
+
+    private LocalDate dateOfBirth;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
@@ -49,7 +57,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean equals(Object o) {
-        if(this == o)return true;
+        if (this == o) return true;
         if (!(o instanceof User user)) return false;
         return Objects.equals(getId(), user.getId());
     }

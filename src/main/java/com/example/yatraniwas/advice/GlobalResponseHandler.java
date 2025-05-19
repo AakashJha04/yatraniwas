@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestControllerAdvice
 public class GlobalResponseHandler implements ResponseBodyAdvice<Object> {
+
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
         return true;
@@ -25,7 +26,7 @@ public class GlobalResponseHandler implements ResponseBodyAdvice<Object> {
                 .stream()
                 .anyMatch(route -> request.getURI().getPath().contains(route));
 
-        if(body instanceof ApiResponse<?> || isAllowed){
+        if(body instanceof ApiResponse<?> || isAllowed) {
             return body;
         }
 
