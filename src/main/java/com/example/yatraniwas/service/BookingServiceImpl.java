@@ -6,10 +6,12 @@ import com.example.yatraniwas.dto.GuestDto;
 import com.example.yatraniwas.entity.*;
 import com.example.yatraniwas.entity.enums.BookingStatus;
 import com.example.yatraniwas.exception.ResourceNotFoundException;
+import com.example.yatraniwas.exception.UnAuthorizedException;
 import com.example.yatraniwas.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -87,6 +89,11 @@ public class BookingServiceImpl implements BookingService{
                 .findById(bookingId)
                 .orElseThrow(()-> new ResourceNotFoundException("Booking not found with id: "+ bookingId));
 
+        User user = getCurrentUser();
+        if(!user.equals(booking.getUser())){
+            throw  new UnAuthorizedException("Booking does not belongs to this user with id: "+user.getId());
+        }
+
         if(hasBookingExpired(booking)){
             throw new IllegalStateException("Booking Timeout");
         }
@@ -109,9 +116,10 @@ public class BookingServiceImpl implements BookingService{
     }
 
     public User getCurrentUser(){
-        User temp_user = new User(); // remove it after spring security added
-        temp_user.setId(1L);
-        return temp_user;
+//        User temp_user = new User(); // remove it after spring security added
+//        temp_user.setId(1L);
+
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
 
